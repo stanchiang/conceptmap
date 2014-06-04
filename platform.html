@@ -63,7 +63,7 @@ $(function(){
     //console.log('control m has been fired. muah hah hah hah hah haaaaaaa!!!');
     var whereisactive = $('.active').offset();
     $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-    $( "#draggable"+count).resizable({ handles:{ se: $('.node').find('.se') } })
+    $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
                           .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
                           .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
                           .offset({ left: whereisactive.left, top: whereisactive.top })
@@ -77,7 +77,7 @@ $(function(){
     
 //    evt = (evt || event);
     $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-    $( "#draggable"+count).resizable({ handles:{ se: $('.node').find('.se') } })
+    $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
                           .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
                           .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
                           .offset({ left: offset.left, top: offset.top })
