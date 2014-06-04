@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>get set</title>
+  <link rel="stylesheet" type="text/css" href="../jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="./scrollingarrowselect- jsFiddle demo_files/normalize.css">
+  <link rel="stylesheet" type="text/css" href="./scrollingarrowselect- jsFiddle demo_files/result-light.css">
+  <script src="../jquery-2.1.0.js"></script>
+  <script src="../jquery-ui.js"></script>
+  <style>
+    .draggable {  width: 4.5em; height: 4.5em; padding: 0.5em; border: 2px solid #ccc; border-radius: 0 1em 1em 1em; background-color: #fff; background-color: rgba(255,255,255,0.5); }
+    .ui-widget-content p { margin: 0; }
+    body { margin: 0; }
+    table { border-spacing: 0; }
+    td{ width: 90px; height: 90px; }
+    .active{ border:1px solid blue;font-weight:bold;color:yellow;background-color:lightblue }
+  </style>
+</head>
+
+<script type="text/javascript">
+$(function(){
+  var count =0;
+  $('td').click(function(){
+    if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+    else{
+      var myCol = $(this).index();
+          var myRow = $(this).closest('tr').index();
+      $('.active').removeClass('active');
+          $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
+      }
+  });
+  
+  $('td').dblclick(function(evt){
+        var offset = $(this).offset();
+        count++;
+        evt = (evt || event);
+        $( "body" ).append('<div id="draggable'+ count + '" class="draggable ui-widget-content"></div>');
+        $( "#draggable" + count).resizable()
+                              .draggable({ snap: "td" })
+                              .offset({ left: offset.left, top: offset.top })
+                              ;
+        //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
+    });
+  
+  $(document).keydown(function(e){
+      if (e.keyCode == 37) {
+      if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+      else{
+            var myCol = $('.active').index();
+            var myRow = $('.active').closest('tr').index();
+        $('.active').removeClass('active');
+            $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
+        }
+        return false;
+      }
+      if (e.keyCode == 38) { 
+      if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+      else{
+            var myCol = $('.active').index();
+            var myRow = $('.active').closest('tr').index();
+        $('.active').removeClass('active');
+            $( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
+        }
+        return false;
+      }
+      if (e.keyCode == 39) { 
+      if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+      else{
+            var myCol = $('.active').index();
+            var myRow = $('.active').closest('tr').index();
+        $('.active').removeClass('active');
+            $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
+        }
+        return false;     }
+      if (e.keyCode == 40) { 
+      if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+      else{
+            var myCol = $('.active').index();
+            var myRow = $('.active').closest('tr').index();
+        $('.active').removeClass('active');
+            $( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
+        }
+        return false;     }
+  });
+});
+</script>
+
+<body>
+  <table border="1" id="navigate">
+    <tr>
+      <td class="active"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+</body>
+
+</html>

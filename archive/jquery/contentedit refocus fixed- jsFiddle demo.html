@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://jsfiddle.net/CywUd/1/show/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title> - jsFiddle demo</title>
+  
+  <script type="text/javascript" src="./contentedit refocus fixed- jsFiddle demo_files/dummy.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="./contentedit refocus fixed- jsFiddle demo_files/normalize.css">
+  
+  
+  <link rel="stylesheet" type="text/css" href="./contentedit refocus fixed- jsFiddle demo_files/result-light.css">
+  
+  <style type="text/css">
+    #edit {
+    border: 1px outset #ccc;
+    overflow-x: hidden;
+    overflow-y: auto;
+    word-wrap: normal;
+    width: 250px; height: 100px;
+}
+  </style>
+  
+
+
+<script type="text/javascript">//<![CDATA[ 
+window.onload=function(){
+obj = document.getElementById('edit');
+
+obj.onfocus = function() {Replace(this)};
+obj.onblur = function() {Replace(this)};
+obj.onkeyup = function() {Replace(this)};
+obj.onkeydown = function() {Replace(this)};
+obj.onclick = function() {Replace(this)};
+
+function Replace(element) {
+    var someText = 'some_text',
+        index, child, img;
+    for (var i = 0, il = element.childNodes.length; i < il; i++) {
+        child = element.childNodes[i];
+        if (child.nodeType == 1) {
+            Replace(child);
+        } else if (child.nodeType == 3) {
+            index = child.data.indexOf(someText);
+            if (index >= 0) {
+                var img = document.createElement('img'),
+                    sel, rng;
+                img.src = "http://www.softwaregeek.com/images/icons/small_arrow_icons_desktop_enhancements_icons-133902.gif";
+                child.splitText(index);
+                child.nextSibling.splitText(someText.length);
+                child.parentNode.replaceChild(img, child.nextSibling);
+                if (document.createRange) {
+                    rng = document.createRange();
+                    rng.selectNodeContents(element);
+                    rng.collapse(false);
+                    sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(rng);
+                } else if (document.selection) {
+                    rng = document.body.createTextRange();
+                    rng.moveToElementText(element);
+                    rng.collapse(false);
+                    rng.select();
+                }
+            }
+        }
+    }
+}
+}//]]>  
+
+</script>
+
+
+<style type="text/css"></style></head>
+<body>
+  <div id="edit" contenteditable="true"></div>
+<p>some_text = <img src="./contentedit refocus fixed- jsFiddle demo_files/small_arrow_icons_desktop_enhancements_icons-133902.gif"></p>
+  
+
+
+
+
+
+</body></html>

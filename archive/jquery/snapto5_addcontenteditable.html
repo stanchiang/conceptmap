@@ -4,9 +4,10 @@
   <meta charset="utf-8">
   <title>get set</title>
   <link rel="stylesheet" type="text/css" href="../jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="./scrollingarrowselect- jsFiddle demo_files/normalize.css">
+  <link rel="stylesheet" type="text/css" href="./scrollingarrowselect- jsFiddle demo_files/result-light.css">
   <script src="../jquery-2.1.0.js"></script>
   <script src="../jquery-ui.js"></script>
-  <script src="../mousetrap-master/mousetrap.min.js"></script>
   <style>
     .draggable {  
       width: 4.5em; 
@@ -16,6 +17,7 @@
       padding: 0.5em; 
       border: 1px solid #ccc; 
       border-radius: 0 1em 1em 1em; 
+      background-color: #fff; 
       background-color: rgba(255,255,255,0.5); 
     }
     .ui-widget-content p { 
@@ -59,34 +61,26 @@
 $(function(){
   var count =0;
   
-  Mousetrap.bind(['ctrl+m'], function() {
-    //console.log('control m has been fired. muah hah hah hah hah haaaaaaa!!!');
-    var whereisactive = $('.active').offset();
-    $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-    $( "#draggable"+count).resizable({ handles:{ se: $('.node').find('.se') } })
-                          .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                          .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                          .offset({ left: whereisactive.left, top: whereisactive.top })
-                          ;
-    count++;
-    return false;
-  });
-
- $('td').dblclick(function(evt){
-    var offset = $(this).offset();
-    
-//    evt = (evt || event);
-    $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-    $( "#draggable"+count).resizable({ handles:{ se: $('.node').find('.se') } })
-                          .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                          .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                          .offset({ left: offset.left, top: offset.top })
-                          ;
-    count++;
-    evt.stopPropagation();
-    
-    //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
-  });
+  $('td').dblclick(function(evt){
+        var offset = $(this).offset();
+        count++;
+        evt = (evt || event);
+        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+        $( "#draggable"+count).resizable({ 
+                                handles:{
+                                  se: $('.node').find('.se')
+                                }  
+                              })
+                              .position({
+                                my: "left top",
+                                at: "left top",
+                                of: ".custom-draggable-handle"
+                              })
+                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+                              .offset({ left: offset.left, top: offset.top })
+                              ;
+        //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
+    });
   
   $('td').click(function(){
     if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
@@ -96,14 +90,8 @@ $(function(){
       $('.active').removeClass('active');
           $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
       }
-    return false;
   });
   
-  $('.node').click(function(){
-    console.log('node clicked');  
-    return false;
-  });
-
   $(document).keydown(function(e){
       if (e.keyCode == 37) {
         if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}

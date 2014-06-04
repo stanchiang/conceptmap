@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://jsfiddle.net/uQWRk/show/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title> - jsFiddle demo</title>
+  
+  <script type="text/javascript" src="./draggable-resizable-butnoteditable- jsFiddle demo_files/jquery-1.6.4.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="./draggable-resizable-butnoteditable- jsFiddle demo_files/normalize.css">
+  
+  
+  <link rel="stylesheet" type="text/css" href="./draggable-resizable-butnoteditable- jsFiddle demo_files/result-light.css">
+  
+    
+      <script type="text/javascript" src="./draggable-resizable-butnoteditable- jsFiddle demo_files/jquery-ui.js"></script>
+    
+  
+    
+      <link rel="stylesheet" type="text/css" href="./draggable-resizable-butnoteditable- jsFiddle demo_files/jquery-ui.css">
+    
+  
+  <style type="text/css">
+    #dragThis {
+        width: 6em;
+        height: 6em;
+        padding: 0.5em;
+        border: 3px solid #ccc;
+        border-radius: 0 1em 1em 1em;
+        background-color: #fff;
+        background-color: rgba(255,255,255,0.5);
+    }
+
+    #dropHere {
+        width: 12em;
+        height: 12em;
+        padding: 0.5em;
+        border: 3px solid #f90;
+        border-radius: 1em;
+        margin: 0 auto;
+    }
+  </style>
+  
+
+
+<script type="text/javascript">//<![CDATA[ 
+
+	$(document).ready(function() {
+	
+		$('#dragThis')
+		.resizable({
+			stop: function(event, ui) {
+				var w = $(this).width();
+				var h = $(this).height();
+				console.log('StopEvent fired')
+				console.log('Width:'+w);
+				console.log('Height:'+h)    
+			}
+		})
+		.draggable({
+			containment: $('body'),
+			drag: function(){
+				var offset = $(this).offset();
+				var xPos = offset.left;
+				var yPos = offset.top;
+				$('#posX').text('x: ' + xPos);
+				$('#posY').text('y: ' + yPos);
+			},
+			stop: function(){
+				var finalOffset = $(this).offset();
+				var finalxPos = finalOffset.left;
+				var finalyPos = finalOffset.top;
+				$('#finalX').text('Final X: ' + finalxPos);
+				$('#finalY').text('Final X: ' + finalyPos);
+			}
+		});
+		
+		$('#dropHere').droppable({
+			accept: '#dragThis',
+			over : function(){
+				$(this).animate({
+					'border-width' : '5px',
+					'border-color' : '#0f0'
+				}, 500);
+				$('#dragThis').draggable('option','containment',$(this));
+			}
+		});
+		
+	});
+//]]>  
+
+</script>
+
+
+<style type="text/css"></style></head>
+<body style="cursor: auto;">
+  <div id="dragThis" class="ui-resizable ui-draggable" style="left: 606px; top: 168px;">
+<ul>
+    <li id="posX">x: 600</li>
+    <li id="posY">y: 171</li>
+    <li id="finalX">Final X: 606</li>
+    <li id="finalY">Final X: 168</li>
+</ul>
+<div class="ui-resizable-handle ui-resizable-e" unselectable="on"></div><div class="ui-resizable-handle ui-resizable-s" unselectable="on"></div><div class="ui-resizable-handle ui-resizable-se ui-icon ui-icon-gripsmall-diagonal-se" unselectable="on" style="z-index: 1001;"></div></div>
+<div id="dropHere" class="ui-droppable" style="border-width: 5px;"></div>
+  
+
+
+
+
+
+</body></html>

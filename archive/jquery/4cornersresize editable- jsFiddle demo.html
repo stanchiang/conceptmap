@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://jsfiddle.net/3Ve4U/157/show/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title> - jsFiddle demo</title>
+  
+  <script src="../jquery-2.1.0.js"></script>
+  <script src="../jquery-ui.js"></script>
+  <link rel="stylesheet" type="text/css" href="../jquery-ui.css">
+  
+  <link rel="stylesheet" type="text/css" href="./4cornersresize editable- jsFiddle demo_files/normalize.css">
+  <link rel="stylesheet" type="text/css" href="./4cornersresize editable- jsFiddle demo_files/result-light.css">
+  
+  <style type="text/css">
+    #drag-area {
+        width: 400px;
+        height: 400px;
+        position: absolute;
+        border: 1px solid black;
+    }
+    .editable-text {
+        border: 1px solid black;
+        min-width: 50px;
+        max-width:400px;
+        min-height: 18px;
+        position: absolute;    
+    }
+    .ui-resizable-handle {
+        min-width: 20px;
+        height: 10px;
+        background-color: white;
+        border: 1px solid black;
+    }
+    .se { right: -5px; bottom: -5px;}
+</style>
+
+<script type="text/javascript">//<![CDATA[ 
+$(window).load(function(){
+$(function() {
+    $('#text-block').find('.editable-text')
+        .draggable()
+        .resizable({
+            handles: {
+    //            nw: $('#text-block').find('.nw'),
+                ne: $('#text-block').find('.ne'),
+                sw: $('#text-block').find('.sw'),
+                se: $('#text-block').find('.se')
+            },
+            containment: $('#drag-area'),
+            minWidth: 50,
+            minHeight: 18
+    })
+});
+});//]]>  
+</script>
+</head>
+<body>
+  <div id="drag-area">
+    <div id="text-block" class="lighter-heading hidden text-block">
+        <div class="editable-text ui-resizable" contenteditable="">
+            Text
+            <div class="ui-resizable-handle ui-resizable-nw nw handle"></div>
+            <div class="ui-resizable-handle ui-resizable-ne ne handle"></div>
+            <div class="ui-resizable-handle ui-resizable-sw sw handle"></div>
+            <div class="ui-resizable-handle ui-resizable-se se handle"></div>
+        </div>
+    </div>
+</div>
+</body></html>
