@@ -28,7 +28,7 @@
       border-spacing: 0; 
     }
     td{ 
-      width: 90px; height: 90px; 
+      width: 4.5em; height: 4.5em; 
     }
     .active{ 
       border:1px solid blue;
@@ -49,124 +49,115 @@
       border: 1px solid black;    
     }
     [contenteditable]{
-      height:70px; 
+      min-width: 4.5em;
+      min-height: 3em;
     }
 
   </style>
 </head>
 
 <script type="text/javascript">
-$(function(){
-  var count =0;
-  
-  Mousetrap.bind(['ctrl+m'], function() {
-    //console.log('control m has been fired. muah hah hah hah hah haaaaaaa!!!');
-    var whereisactive = $('.active').offset();
-    $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-    $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
-                          .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                          .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                          .offset({ left: whereisactive.left, top: whereisactive.top })
-                          ;
-    count++;
-    return false;
-  });
 
- $('td').dblclick(function(evt){
-    var offset = $(this).offset();
-    
-//    evt = (evt || event);
-    $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-    $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
-                          .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                          .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                          .offset({ left: offset.left, top: offset.top })
-                          ;
-    count++;
-    evt.stopPropagation();
-    
-    //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
-  });
-  
-  $('td').click(function(){
-    if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-    else{
-      var myCol = $(this).index();
-          var myRow = $(this).closest('tr').index();
-      $('.active').removeClass('active');
-          $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
-      }
-    return false;
-  });
-  
-  $('.node').click(function(){
-    console.log('node clicked');  
-    return false;
-  });
+  $(window).load(function(){
 
-  $(document).keydown(function(e){
-      if (e.keyCode == 37) {
+    $( "body" ).append( '<div><table border="1"></table><div>' );
+    for (var i = 0; i < 15; i++) { $( "table").append( '<tr></tr>' ); };
+    for (var i = 0; i < 15; i++) { $( '<td></td>' ).appendTo( "tr" ); };
+    $( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
+
+    $(function(){
+      var count =0;
+      
+      Mousetrap.bind(['ctrl+m'], function() {
+        //console.log('control m has been fired. muah hah hah hah hah haaaaaaa!!!');
+        var whereisactive = $('.active').offset();
+        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+        $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
+                              .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
+                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+                              .offset({ left: whereisactive.left, top: whereisactive.top })
+                              ;
+        count++;
+        return false;
+      });
+
+     $('td').dblclick(function(evt){
+        var offset = $(this).offset();
+        
+    //    evt = (evt || event);
+        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+        $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
+                              .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
+                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+                              .offset({ left: offset.left, top: offset.top })
+                              ;
+        count++;
+        return false;
+        //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
+      });
+
+      
+      $('td').click(function(){
         if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
         else{
-          var myCol = $('.active').index();
-          var myRow = $('.active').closest('tr').index();
+          var myCol = $(this).index();
+              var myRow = $(this).closest('tr').index();
           $('.active').removeClass('active');
-          $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
-        }
-      return false;
-      }
-      if (e.keyCode == 38) { 
-        if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-        else{
-          var myCol = $('.active').index();
-          var myRow = $('.active').closest('tr').index();
-          $('.active').removeClass('active');
-          $( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
+              $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
           }
-      return false;
-      }
-      if (e.keyCode == 39) { 
-        if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-        else{
-          var myCol = $('.active').index();
-          var myRow = $('.active').closest('tr').index();
-          $('.active').removeClass('active');
-          $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
-        }
-      return false;     
-      }
-      if (e.keyCode == 40) { 
-        if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-        else{
-          var myCol = $('.active').index();
-          var myRow = $('.active').closest('tr').index();
-          $('.active').removeClass('active');
-          $( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
-        }
-      return false;     
-      }
-  });
-});
+        return false;
+      });
+      
+      $(document).keydown(function(e){
+          if (e.keyCode == 37) {
+            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+            else{
+              var myCol = $('.active').index();
+              var myRow = $('.active').closest('tr').index();
+              $('.active').removeClass('active');
+              $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
+            }
+          return false;
+          }
+          if (e.keyCode == 38) { 
+            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+            else{
+              var myCol = $('.active').index();
+              var myRow = $('.active').closest('tr').index();
+              $('.active').removeClass('active');
+              $( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
+              }
+          return false;
+          }
+          if (e.keyCode == 39) { 
+            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+            else{
+              var myCol = $('.active').index();
+              var myRow = $('.active').closest('tr').index();
+              $('.active').removeClass('active');
+              $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
+            }
+          return false;     
+          }
+          if (e.keyCode == 40) { 
+            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+            else{
+              var myCol = $('.active').index();
+              var myRow = $('.active').closest('tr').index();
+              $('.active').removeClass('active');
+              $( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
+            }
+          return false;     
+          }
+      });
+    });
+  }); 
+
+
+
 </script>
 
 <body>
-  <table border="1" id="navigate">
-    <tr>
-      <td class="active"></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </table>
 </body>
 
 </html>
