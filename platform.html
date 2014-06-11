@@ -10,22 +10,42 @@
   <script src="../mousetrap-master/mousetrap.min.js"></script>
 </head>
 
+
+
+<body>
+</body>
 <script type="text/javascript">
 
   $(window).load(function(){
+    var row = 15;
+    var col = 15;
+    var table = [];
 
+    //build a graphical table    
     $( "body" ).append( '<table border="1"></table>' );
-    for (var i = 0; i < 14; i++) { $( "table").append( '<tr></tr>' ); };
-    for (var i = 0; i < 16; i++) { $( '<td></td>' ).appendTo( "tr" ); };
+    for (var i = 0; i < row; i++) { $( "table").append( '<tr></tr>' ); };
+    for (var i = 0; i < col; i++) { $( '<td></td>' ).appendTo( "tr" ); };
+
+    //build a table backend to store data
+    for(var i=0; i < row; i++){
+      table.push([]);
+      table[i].push( new Array(col));
+      for(var j=0; j < col; j++){
+        table[i][j] = [];
+      }
+    }
+
+    //initaliza active cell
     $( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
 
+    //don't know how functions actually work so everything else is in this giant function
     $(function(){
       var count =0;
       
+      //'ctrl+m' initalizes a new node 
       Mousetrap.bind(['ctrl+m'], function() {
-        //console.log('control m has been fired. muah hah hah hah hah haaaaaaa!!!');
         var whereisactive = $('.active').offset();
-        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
         $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
                               .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
                               .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
@@ -35,30 +55,32 @@
         return false;
       });
 
-      $('td').dblclick(function(){
-        var offset = $(this).offset();
+      //move active to currently selected node
+      Mousetrap.bind(['ctrl+l'], function() {
+        var nodecoord = $('.handle-select-on').parent('.node').offset();
         
-    //    evt = (evt || event);
-        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-        $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
-                              .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                              .offset({ left: offset.left, top: offset.top })
-                              ;
-        count++;
+        //find cell behind node by temporarily hiding node from the DOM
+        $('.handle-select-on').parent('.node').hide();
+        var celltopleft = $(document.elementFromPoint(nodecoord.left, nodecoord.top));
+        $('.handle-select-on').parent('.node').show();
+        //set cell to active
+        var myCol = celltopleft.index();
+        var myRow = celltopleft.closest('tr').index();
+        $('.active').removeClass('active');
+        $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
         return false;
-        //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
       });
 
-      
+      //click marks node as selected by toggling color of handle
+      $(document).on('click','.handle-select',function(){
+        $( this ).toggleClass( "handle-select-on" );
+      });
+
       $('td').click(function(){
-        if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-        else{
-          var myCol = $(this).index();
-              var myRow = $(this).closest('tr').index();
-          $('.active').removeClass('active');
-              $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
-          }
+        var myCol = $(this).index();
+        var myRow = $(this).closest('tr').index();
+        $('.active').removeClass('active');
+            $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );       
         return false;
       });
       
@@ -68,6 +90,8 @@
             else{
               var myCol = $('.active').index();
               var myRow = $('.active').closest('tr').index();
+              //console.log('active closest: ')
+              //console.log($('.active').closest('tr'));
               if(myCol - 1 > -1){
                 $('.active').removeClass('active');
                 $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
@@ -116,10 +140,22 @@
   }); 
 
 
+/*
+      $('td').dblclick(function(){
+        var offset = $(this).offset();
+        
+        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+        $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
+                              .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
+                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+                              .offset({ left: offset.left, top: offset.top })
+                              ;
+        count++;
+        return false;
+        //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
+      });
+
+*/
 
 </script>
-
-<body>
-</body>
-
 </html>
