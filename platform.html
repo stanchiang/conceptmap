@@ -60,9 +60,9 @@
 
   $(window).load(function(){
 
-    $( "body" ).append( '<div><table border="1"></table><div>' );
-    for (var i = 0; i < 15; i++) { $( "table").append( '<tr></tr>' ); };
-    for (var i = 0; i < 15; i++) { $( '<td></td>' ).appendTo( "tr" ); };
+    $( "body" ).append( '<table border="1"></table>' );
+    for (var i = 0; i < 14; i++) { $( "table").append( '<tr></tr>' ); };
+    for (var i = 0; i < 16; i++) { $( '<td></td>' ).appendTo( "tr" ); };
     $( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
 
     $(function(){
@@ -81,7 +81,7 @@
         return false;
       });
 
-     $('td').dblclick(function(evt){
+     $('td').dblclick(function(){
         var offset = $(this).offset();
         
     //    evt = (evt || event);
@@ -109,43 +109,52 @@
       });
       
       $(document).keydown(function(e){
-          if (e.keyCode == 37) {
+          if (e.keyCode == 37) {//left
             if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
             else{
               var myCol = $('.active').index();
               var myRow = $('.active').closest('tr').index();
-              $('.active').removeClass('active');
-              $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
+              if(myCol - 1 > -1){
+                $('.active').removeClass('active');
+                $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
+              }
             }
           return false;
           }
-          if (e.keyCode == 38) { 
+          if (e.keyCode == 38) {//up
             if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
             else{
               var myCol = $('.active').index();
               var myRow = $('.active').closest('tr').index();
-              $('.active').removeClass('active');
-              $( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
+              if(myRow - 1 > -1){
+                $('.active').removeClass('active');
+                $( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
               }
+            }
           return false;
           }
-          if (e.keyCode == 39) { 
+          if (e.keyCode == 39) {//right
             if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
             else{
               var myCol = $('.active').index();
               var myRow = $('.active').closest('tr').index();
-              $('.active').removeClass('active');
-              $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
+              if(myCol+1 < $("table").find('tr')[0].cells.length)
+              {
+                $('.active').removeClass('active');
+                $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
+              }
             }
           return false;     
           }
-          if (e.keyCode == 40) { 
+          if (e.keyCode == 40) {//down
             if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
             else{
               var myCol = $('.active').index();
               var myRow = $('.active').closest('tr').index();
-              $('.active').removeClass('active');
-              $( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
+              if(myRow + 1 < $("table tr").length){
+                $('.active').removeClass('active');
+                $( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
+              }
             }
           return false;     
           }
