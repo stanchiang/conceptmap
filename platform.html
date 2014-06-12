@@ -34,13 +34,16 @@
       //'ctrl+m' initalizes a new node 
       Mousetrap.bind(['ctrl+m'], function() {
         var whereisactive = $('.active').offset();
-        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-        $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
-                              .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                              .offset({ left: whereisactive.left, top: whereisactive.top })
-                              ;
-        count++;
+        if ($(document.elementFromPoint(whereisactive.left,whereisactive.top)).context.outerHTML==='<td class="active"></td>') {
+          $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+          $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
+                                .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
+                                .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+                                .offset({ left: whereisactive.left, top: whereisactive.top })
+                                ;
+          count++;
+        };
+        
         return false;
       });
 
@@ -53,6 +56,12 @@
         else nodeinfront.children('.handle-select-on').toggleClass( "handle-select" )
         
       });
+
+      //jump to nearest selected
+      Mousetrap.bind(['ctrl+.'], function() {
+
+      });
+
 
       //move active to currently selected node
       Mousetrap.bind(['ctrl+l'], function() {
