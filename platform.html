@@ -10,8 +10,6 @@
   <script src="../mousetrap-master/mousetrap.min.js"></script>
 </head>
 
-
-
 <body>
 </body>
 <script type="text/javascript">
@@ -25,15 +23,6 @@
     $( "body" ).append( '<table border="1"></table>' );
     for (var i = 0; i < row; i++) { $( "table").append( '<tr></tr>' ); };
     for (var i = 0; i < col; i++) { $( '<td></td>' ).appendTo( "tr" ); };
-
-    //build a table backend to store data
-    for(var i=0; i < row; i++){
-      table.push([]);
-      table[i].push( new Array(col));
-      for(var j=0; j < col; j++){
-        table[i][j] = [];
-      }
-    }
 
     //initaliza active cell
     $( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
@@ -55,6 +44,16 @@
         return false;
       });
 
+      //set node at active to "selected"
+      Mousetrap.bind(['ctrl+,'], function() {
+        //get node in front of active
+        var nodeinfront = $(document.elementFromPoint($('.active').offset().left, $('.active').offset().top));
+        //set it to "selected" mode
+        if (nodeinfront.children('.handle-select').length) nodeinfront.children('.handle-select').toggleClass( "handle-select-on" )
+        else nodeinfront.children('.handle-select-on').toggleClass( "handle-select" )
+        
+      });
+
       //move active to currently selected node
       Mousetrap.bind(['ctrl+l'], function() {
         var nodecoord = $('.handle-select-on').parent('.node').offset();
@@ -68,6 +67,7 @@
         var myRow = celltopleft.closest('tr').index();
         $('.active').removeClass('active');
         $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
+
         return false;
       });
 
@@ -157,5 +157,36 @@
 
 */
 
+/*
+//build a table backend to store data
+for(var i=0; i < row; i++){
+  table.push([]);
+  table[i].push( new Array(col));
+  for(var j=0; j < col; j++){
+    table[i][j] = [];
+  }
+}
+*/
+
+/*
+// Define a class like this
+function Person(name, gender){
+
+   // Add object properties like this
+   this.name = name;
+   this.gender = gender;
+}
+
+// Add methods like this.  All Person objects will be able to invoke this
+Person.prototype.speak = function(){
+    alert("Howdy, my name is" + this.name);
+}
+
+// Instantiate new objects with 'new'
+var person = new Person("Bob", "M");
+
+// Invoke methods like this
+person.speak(); // alerts "Howdy, my name is Bob"
+*/
 </script>
 </html>
