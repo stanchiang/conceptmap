@@ -14,7 +14,7 @@
 </body>
 <script type="text/javascript">
 
-  $(window).load(function(){
+  $(document).ready(function(){
     var row = 15;
     var col = 15;
     var table = [];
@@ -24,7 +24,7 @@
     for (var i = 0; i < row; i++) { $( "table").append( '<tr></tr>' ); };
     for (var i = 0; i < col; i++) { $( '<td></td>' ).appendTo( "tr" ); };
 
-    //initaliza active cell
+    //initalize active cell
     $( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
 
     //don't know how functions actually work so everything else is in this giant function
@@ -35,8 +35,9 @@
       Mousetrap.bind(['ctrl+m'], function() {
         var whereisactive = $('.active').offset();
         if ($(document.elementFromPoint(whereisactive.left,whereisactive.top)).context.outerHTML==='<td class="active"></td>') {
-          $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-          $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
+          $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div class="ce" contenteditable></div></div>');
+          $( "#draggable"+count).resizable( { handles:{ se: $('#draggable'+count).find('.se') } },
+                                            { alsoResize: '.ce'}  )
                                 .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
                                 .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
                                 .offset({ left: whereisactive.left, top: whereisactive.top })
@@ -51,6 +52,7 @@
       Mousetrap.bind(['ctrl+,'], function() {
         //get node in front of active
         var nodeinfront = $(document.elementFromPoint($('.active').offset().left, $('.active').offset().top));
+        console.log($(document.elementFromPoint($('.active').offset().left, $('.active').offset().top)));
         //set it to "selected" mode
         if (nodeinfront.children('.handle-select').length) nodeinfront.children('.handle-select').toggleClass( "handle-select-on" )
         else nodeinfront.children('.handle-select-on').toggleClass( "handle-select" )
