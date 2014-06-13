@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>get set</title>
-  <link rel="stylesheet" type="text/css" href="../jquery-ui.css">
-  <link rel="stylesheet" type="text/css" href="./style.css">
-  <script src="../jquery-2.1.0.js"></script>
-  <script src="../jquery-ui.js"></script>
-  <script src="../mousetrap-master/mousetrap.min.js"></script>
+  <title>platform</title>
+  <link rel="stylesheet" type="text/css" href="jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+<body></body></html>
 
-<body>
-</body>
+<script src="jquery-2.1.0.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="mousetrap.min.js"></script>
+<script src="jQueryRotateCompressed.2.2.js"></script>
+
 <script type="text/javascript">
 
   $(document).ready(function(){
@@ -52,7 +53,7 @@
       Mousetrap.bind(['ctrl+,'], function() {
         //get node in front of active
         var nodeinfront = $(document.elementFromPoint($('.active').offset().left, $('.active').offset().top));
-        console.log($(document.elementFromPoint($('.active').offset().left, $('.active').offset().top)));
+//        console.log($(document.elementFromPoint($('.active').offset().left, $('.active').offset().top)));
         //set it to "selected" mode
         if (nodeinfront.children('.handle-select').length) nodeinfront.children('.handle-select').toggleClass( "handle-select-on" )
         else nodeinfront.children('.handle-select-on').toggleClass( "handle-select" )
@@ -61,7 +62,63 @@
 
       //create an edge btwn 2 selected nodes
       Mousetrap.bind(['ctrl+.'], function() {
-        $('.handle-select-on').parent('.node').addClass('');
+        $('body').append('<div class="line"></div>');
+        {
+          var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
+          var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
+
+          var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
+          var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
+
+          var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
+          var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
+
+//style="top: 77px; left: 153px; width: 274.0218969352632px; -webkit-transform: rotate(-146.30993247402023deg);"
+
+          if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
+          if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
+          if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
+
+          console.log(b1_x);
+          console.log(b1_y);
+
+          console.log(b2_x);
+          console.log(b2_y);
+
+          $(".line").queue(function(){$(this).offset({top: b1_y, left: b1_x});$(this).dequeue();})
+                    .queue(function(){$(this).width(hypotenuse);$(this).dequeue();})
+                    .queue(function(){$(this).rotate(angle);$(this).dequeue();});
+
+        }
+        $(".draggable").draggable({
+          drag: function(event, ui){
+            var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
+            var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
+
+            var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
+            var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
+
+            var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
+            var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
+
+//style="-webkit-transform: rotate(-146.30993247402023deg); top: 152.55313873291016px; left: 133.17822265625px; width: 274.0218969352632px;"
+
+            if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
+            if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
+            if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
+
+            console.log(b1_x);
+            console.log(b1_y);
+
+            console.log(b2_x);
+            console.log(b2_y);
+
+            $(".line").queue(function(){$(this).offset({top: b1_y, left: b1_x});$(this).dequeue();})
+                      .queue(function(){$(this).width(hypotenuse);$(this).dequeue();})
+                      .queue(function(){$(this).rotate(angle);$(this).dequeue();});
+
+          }
+        });
       });
 
 
@@ -200,4 +257,3 @@ var person = new Person("Bob", "M");
 person.speak(); // alerts "Howdy, my name is Bob"
 */
 </script>
-</html>
