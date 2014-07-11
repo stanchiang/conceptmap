@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>platform</title>
-  <link rel="stylesheet" type="text/css" href="jquery-ui.css">
-  <link rel="stylesheet" type="text/css" href="style.css">
+	<meta charset="utf-8">
+	<title>platform</title>
+	<link rel="stylesheet" type="text/css" href="jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body></body></html>
 
@@ -15,224 +15,224 @@
 
 <script type="text/javascript">
 
-  $(document).ready(function(){
-    var row = 15;
-    var col = 15;
-    var table = [];
+	$(document).ready(function(){
+		var row = 15;
+		var col = 15;
+		var linearray=[];
+		//build a graphical table    
+		$( "body" ).append( '<table border="1"></table>' );
+		for (var i = 0; i < row; i++) { $( "table").append( '<tr></tr>' ); };
+		for (var i = 0; i < col; i++) { $( '<td></td>' ).appendTo( "tr" ); };
 
-    //build a graphical table    
-    $( "body" ).append( '<table border="1"></table>' );
-    for (var i = 0; i < row; i++) { $( "table").append( '<tr></tr>' ); };
-    for (var i = 0; i < col; i++) { $( '<td></td>' ).appendTo( "tr" ); };
+		//initalize active cell
+		$( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
 
-    //initalize active cell
-    $( "table" ).find("tr").eq( 0 ).find("td").eq( 0 ).addClass( "active" );
+		//don't know how functions actually work so everything else is in this giant function
+		$(function(){
+			var count =0;
+			
+			//'ctrl+m' initalizes a new node 
+			Mousetrap.bind(['ctrl+m'], function() {
+				var whereisactive = $('.active').offset();
+				if ($(document.elementFromPoint(whereisactive.left,whereisactive.top)).context.outerHTML==='<td class="active"></td>') {
+					$( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div class="ce" contenteditable></div></div>');
+					$( "#draggable"+count).resizable( { handles:{ se: $('#draggable'+count).find('.se') } },
+																						{ alsoResize: '.ce'}  )
+																.position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
+																.draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+																.offset({ left: whereisactive.left, top: whereisactive.top })
+																;
+					count++;
+				};
+				
+				return false;
+			});
 
-    //don't know how functions actually work so everything else is in this giant function
-    $(function(){
-      var count =0;
-      
-      //'ctrl+m' initalizes a new node 
-      Mousetrap.bind(['ctrl+m'], function() {
-        var whereisactive = $('.active').offset();
-        if ($(document.elementFromPoint(whereisactive.left,whereisactive.top)).context.outerHTML==='<td class="active"></td>') {
-          $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="handle-select"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div class="ce" contenteditable></div></div>');
-          $( "#draggable"+count).resizable( { handles:{ se: $('#draggable'+count).find('.se') } },
-                                            { alsoResize: '.ce'}  )
-                                .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                                .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                                .offset({ left: whereisactive.left, top: whereisactive.top })
-                                ;
-          count++;
-        };
-        
-        return false;
-      });
+			//set node at active to "selected"
+			Mousetrap.bind(['ctrl+,'], function() {
+				//get node in front of active
+				var nodeinfront = $(document.elementFromPoint($('.active').offset().left, $('.active').offset().top));
+				//console.log($(document.elementFromPoint($('.active').offset().left, $('.active').offset().top)));
+				//set it to "selected" mode
+				if (nodeinfront.children('.handle-select').length) nodeinfront.children('.handle-select').toggleClass( "handle-select-on" )
+				else nodeinfront.children('.handle-select-on').toggleClass( "handle-select" )
+				
+			});
+			var linecount=0;
+			//create an edge btwn 2 selected nodes
+			Mousetrap.bind(['ctrl+.'], function() {
+				linecount++;
 
-      //set node at active to "selected"
-      Mousetrap.bind(['ctrl+,'], function() {
-        //get node in front of active
-        var nodeinfront = $(document.elementFromPoint($('.active').offset().left, $('.active').offset().top));
-//        console.log($(document.elementFromPoint($('.active').offset().left, $('.active').offset().top)));
-        //set it to "selected" mode
-        if (nodeinfront.children('.handle-select').length) nodeinfront.children('.handle-select').toggleClass( "handle-select-on" )
-        else nodeinfront.children('.handle-select-on').toggleClass( "handle-select" )
-        
-      });
+//if nodes don't have an edge yet
+				$('body').append('<div class="line" id=line'+ linecount +'></div>');
+				{
+					var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
+					var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
 
-      //create an edge btwn 2 selected nodes
-      Mousetrap.bind(['ctrl+.'], function() {
-        $('body').append('<div class="line"></div>');
-        {
-          var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
-          var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
+					var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
+					var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
 
-          var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
-          var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
+					var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
+					var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
 
-          var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
-          var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
+					linearray.push([$(document.elementFromPoint(b1_x,b1_y))[0].id, 
+													$(document.elementFromPoint(b2_x,b2_y))[0].id,
+													'#line'+linecount, b1_x, b1_y, b2_x, b2_y]);  
 
-//style="top: 77px; left: 153px; width: 274.0218969352632px; -webkit-transform: rotate(-146.30993247402023deg);"
+					if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
+					if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
+					if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
 
-          if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
-          if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
-          if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
+					$('#line'+linecount)
+							.queue(function(){$(this).offset({top: b1_y, left: b1_x});$(this).dequeue();})
+							.queue(function(){$(this).width(hypotenuse);$(this).dequeue();})
+							.queue(function(){$(this).rotate(angle);$(this).dequeue();})
+							;
 
-          console.log(b1_x);
-          console.log(b1_y);
+				}
+				$(".draggable").draggable(
+/////////
+				{
+					drag: function(event, ui){
+// calculate which lines are part of node being dragged
+// fun for-loop/recursive function to drag all simultaneously with node
+//remove handle-select-on after adding edge 
+						var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
+						var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
 
-          console.log(b2_x);
-          console.log(b2_y);
+						var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
+						var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
 
-          $(".line").queue(function(){$(this).offset({top: b1_y, left: b1_x});$(this).dequeue();})
-                    .queue(function(){$(this).width(hypotenuse);$(this).dequeue();})
-                    .queue(function(){$(this).rotate(angle);$(this).dequeue();});
+						var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
+						var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
 
-        }
-        $(".draggable").draggable({
-          drag: function(event, ui){
-            var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
-            var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
+						if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
+						if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
+						if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
 
-            var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
-            var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
+						$("#line"+linecount)
+								.queue(function(){$(this).offset({top: b1_y, left: b1_x});  $(this).dequeue();})
+								.queue(function(){$(this).width(hypotenuse);                $(this).dequeue();})
+								.queue(function(){$(this).rotate(angle);                    $(this).dequeue();})
+								;
 
-            var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
-            var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
-
-//style="-webkit-transform: rotate(-146.30993247402023deg); top: 152.55313873291016px; left: 133.17822265625px; width: 274.0218969352632px;"
-
-            if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
-            if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
-            if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
-
-            console.log(b1_x);
-            console.log(b1_y);
-
-            console.log(b2_x);
-            console.log(b2_y);
-
-            $(".line").queue(function(){$(this).offset({top: b1_y, left: b1_x});$(this).dequeue();})
-                      .queue(function(){$(this).width(hypotenuse);$(this).dequeue();})
-                      .queue(function(){$(this).rotate(angle);$(this).dequeue();});
-
-          }
-        });
-      });
+					}
+				});
+/////////
+			});
 
 
-      //move active to currently selected node
-      Mousetrap.bind(['ctrl+l'], function() {
-        var nodecoord = $('.handle-select-on').parent('.node').offset();
-        
-        //find cell behind node by temporarily hiding node from the DOM
-        $('.handle-select-on').parent('.node').hide();
-        var celltopleft = $(document.elementFromPoint(nodecoord.left, nodecoord.top));
-        $('.handle-select-on').parent('.node').show();
-        //set cell to active
-        var myCol = celltopleft.index();
-        var myRow = celltopleft.closest('tr').index();
-        $('.active').removeClass('active');
-        $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
+			//move active to currently selected node
+			Mousetrap.bind(['ctrl+l'], function() {
+				var nodecoord = $('.handle-select-on').parent('.node').offset();
+				
+				//find cell behind node by temporarily hiding node from the DOM
+				$('.handle-select-on').parent('.node').hide();
+				var celltopleft = $(document.elementFromPoint(nodecoord.left, nodecoord.top));
+				$('.handle-select-on').parent('.node').show();
+				//set cell to active
+				var myCol = celltopleft.index();
+				var myRow = celltopleft.closest('tr').index();
+				$('.active').removeClass('active');
+				$( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );
 
-        return false;
-      });
+				return false;
+			});
 
-      //click marks node as selected by toggling color of handle
-      $(document).on('click','.handle-select',function(){
-        $( this ).toggleClass( "handle-select-on" );
-      });
+			//click marks node as selected by toggling color of handle
+			$(document).on('click','.handle-select',function(){
+				$( this ).toggleClass( "handle-select-on" );
+			});
 
-      $('td').click(function(){
-        var myCol = $(this).index();
-        var myRow = $(this).closest('tr').index();
-        $('.active').removeClass('active');
-            $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );       
-        return false;
-      });
-      
-      $(document).keydown(function(e){
-          if (e.keyCode == 37) {//left
-            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-            else{
-              var myCol = $('.active').index();
-              var myRow = $('.active').closest('tr').index();
-              //console.log('active closest: ')
-              //console.log($('.active').closest('tr'));
-              if(myCol - 1 > -1){
-                $('.active').removeClass('active');
-                $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
-              }
-            }
-          return false;
-          }
-          if (e.keyCode == 38) {//up
-            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-            else{
-              var myCol = $('.active').index();
-              var myRow = $('.active').closest('tr').index();
-              if(myRow - 1 > -1){
-                $('.active').removeClass('active');
-                $( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
-              }
-            }
-          return false;
-          }
-          if (e.keyCode == 39) {//right
-            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-            else{
-              var myCol = $('.active').index();
-              var myRow = $('.active').closest('tr').index();
-              if(myCol+1 < $("table").find('tr')[0].cells.length){
-                $('.active').removeClass('active');
-                $( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
-              }
-            }
-          return false;     
-          }
-          if (e.keyCode == 40) {//down
-            if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
-            else{
-              var myCol = $('.active').index();
-              var myRow = $('.active').closest('tr').index();
-              if(myRow + 1 < $("table tr").length){
-                $('.active').removeClass('active');
-                $( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
-              }
-            }
-          return false;     
-          }
-      });
-    });
-  }); 
+			$('td').click(function(){
+				var myCol = $(this).index();
+				var myRow = $(this).closest('tr').index();
+				$('.active').removeClass('active');
+						$( "table" ).find("tr").eq( myRow ).find("td").eq( myCol ).addClass( "active" );       
+				return false;
+			});
+			
+			$(document).keydown(function(e){
+					if (e.keyCode == 37) {//left
+						if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+						else{
+							var myCol = $('.active').index();
+							var myRow = $('.active').closest('tr').index();
+							//console.log('active closest: ')
+							//console.log($('.active').closest('tr'));
+							if(myCol - 1 > -1){
+								$('.active').removeClass('active');
+								$( "table" ).find("tr").eq( myRow ).find("td").eq( myCol-1 ).addClass( "active" );
+							}
+						}
+					return false;
+					}
+					if (e.keyCode == 38) {//up
+						if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+						else{
+							var myCol = $('.active').index();
+							var myRow = $('.active').closest('tr').index();
+							if(myRow - 1 > -1){
+								$('.active').removeClass('active');
+								$( "table" ).find("tr").eq( myRow-1 ).find("td").eq( myCol ).addClass( "active" );
+							}
+						}
+					return false;
+					}
+					if (e.keyCode == 39) {//right
+						if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+						else{
+							var myCol = $('.active').index();
+							var myRow = $('.active').closest('tr').index();
+							if(myCol+1 < $("table").find('tr')[0].cells.length){
+								$('.active').removeClass('active');
+								$( "table" ).find("tr").eq( myRow ).find("td").eq( myCol+1 ).addClass( "active" );
+							}
+						}
+					return false;     
+					}
+					if (e.keyCode == 40) {//down
+						if ($('.active').length && $(this).attr("class")==="active") {$('.active').removeClass('active');}
+						else{
+							var myCol = $('.active').index();
+							var myRow = $('.active').closest('tr').index();
+							if(myRow + 1 < $("table tr").length){
+								$('.active').removeClass('active');
+								$( "table" ).find("tr").eq( myRow+1 ).find("td").eq( myCol ).addClass( "active" );
+							}
+						}
+					return false;     
+					}
+			});
+		});
+	}); 
 
 
 /*
-      $('td').dblclick(function(){
-        var offset = $(this).offset();
-        
-        $( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
-        $( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
-                              .position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
-                              .draggable({ snap: "td", handle: ".custom-draggable-handle"  })
-                              .offset({ left: offset.left, top: offset.top })
-                              ;
-        count++;
-        return false;
-        //console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
-      });
+			$('td').dblclick(function(){
+				var offset = $(this).offset();
+				
+				$( "body" ).append('<div id="draggable'+ count + '" class="node draggable ui-widget-content"><div class="custom-draggable-handle"></div><div class="ui-resizable-handle ui-resizable-se se"></div><div contenteditable></div></div>');
+				$( "#draggable"+count).resizable({ handles:{ se: $('#draggable'+count).find('.se') } })
+															.position({ my: "left top", at: "left top", of: ".custom-draggable-handle" })
+															.draggable({ snap: "td", handle: ".custom-draggable-handle"  })
+															.offset({ left: offset.left, top: offset.top })
+															;
+				count++;
+				return false;
+				//console.log( this.tagName + " coords ( " + offset.left + ", " + offset.top + " )" );
+			});
 
 */
 
 /*
 //build a table backend to store data
 for(var i=0; i < row; i++){
-  table.push([]);
-  table[i].push( new Array(col));
-  for(var j=0; j < col; j++){
-    table[i][j] = [];
-  }
+	table.push([]);
+	table[i].push( new Array(col));
+	for(var j=0; j < col; j++){
+		table[i][j] = [];
+	}
 }
 */
 
@@ -240,14 +240,14 @@ for(var i=0; i < row; i++){
 // Define a class like this
 function Person(name, gender){
 
-   // Add object properties like this
-   this.name = name;
-   this.gender = gender;
+	 // Add object properties like this
+	 this.name = name;
+	 this.gender = gender;
 }
 
 // Add methods like this.  All Person objects will be able to invoke this
 Person.prototype.speak = function(){
-    alert("Howdy, my name is" + this.name);
+		alert("Howdy, my name is" + this.name);
 }
 
 // Instantiate new objects with 'new'
