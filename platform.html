@@ -60,69 +60,89 @@
 			});
 			var linecount=0;
 			//create an edge btwn 2 selected nodes
+			
+			function edgealreadyexists (node0, node1) {
+				
+
+				console.log(node0);
+				console.log(node1);
+				if (true) {return false;} 
+				else {return false;};
+				;
+			}
+
 			Mousetrap.bind(['ctrl+.'], function() {
-				linecount++;
-
+				
+				if(edgealreadyexists($('.handle-select-on').parent('.node')[0],
+														 $('.handle-select-on').parent('.node')[1])
+														 ===false){
 //if nodes don't have an edge yet
-				$('body').append('<div class="line" id=line'+ linecount +'></div>');
-				{
-					var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
-					var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
+					$('body').append('<div class="line" id=line'+ linecount +'></div>');
+					{
+						//node 1
+						var b0_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
+						var b0_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
 
-					var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
-					var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
+						//node 2
+						var b1_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
+						var b1_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
 
-					var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
-					var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
+						var hypotenuse = Math.sqrt((b0_x-b1_x)*(b0_x-b1_x) + (b0_y-b1_y)*(b0_y-b1_y));
+						var angle = Math.atan2((b0_y-b1_y), (b0_x-b1_x)) *  (180/Math.PI);
 
-					linearray.push([$(document.elementFromPoint(b1_x,b1_y))[0].id, 
-													$(document.elementFromPoint(b2_x,b2_y))[0].id,
-													'#line'+linecount, b1_x, b1_y, b2_x, b2_y]);  
-
-					if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
-					if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
-					if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
-
-					$('#line'+linecount)
-							.queue(function(){$(this).width(hypotenuse);								$(this).dequeue();})
-							.queue(function(){$(this).rotate(angle);										$(this).dequeue();})
-							.queue(function(){$(this).offset({top: b1_y, left: b1_x});	$(this).dequeue();})
-							// NOTE: we must offset a second time to compensate for the angle rotation
-							.queue(function(){$(this).offset({top: b1_y, left: b1_x});	$(this).dequeue();})
-							;
-
-				}
-				$(".draggable").draggable(
-/////////
-				{
-					drag: function(event, ui){
-// calculate which lines are part of node being dragged
-// fun for-loop/recursive function to drag all simultaneously with node
-// need to populate b1 & b2 vars from linearray instead of scraping DOM elements
-// remove handle-select-on after adding edge 
-
-						var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
-						var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
-
-						var b2_x = $($('.handle-select-on').parent('.node')[1]).offset().left;
-						var b2_y = $($('.handle-select-on').parent('.node')[1]).offset().top;
-
-						var hypotenuse = Math.sqrt((b1_x-b2_x)*(b1_x-b2_x) + (b1_y-b2_y)*(b1_y-b2_y));
-						var angle = Math.atan2((b1_y-b2_y), (b1_x-b2_x)) *  (180/Math.PI);
-
-						if(angle >= 90 && angle < 180)  {b1_y = b2_y;}
-						if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
-						if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
+						if(angle >= 90 && angle < 180)  {b0_y = b1_y;}
+						if(angle > 0 && angle < 90)     {b0_x = b1_x;b0_y = b1_y;}
+						if(angle <= 0 && angle > -90)   {b0_x = b1_x;}
 
 						$('#line'+linecount)
-								.queue(function(){$(this).offset({top: b1_y, left: b1_x});	$(this).dequeue();})
 								.queue(function(){$(this).width(hypotenuse);								$(this).dequeue();})
 								.queue(function(){$(this).rotate(angle);										$(this).dequeue();})
+								.queue(function(){$(this).offset({top: b0_y, left: b0_x});	$(this).dequeue();})
+								// NOTE: we must offset a second time to compensate for the angle rotation
+								.queue(function(){$(this).offset({top: b0_y, left: b0_x});	$(this).dequeue();})
 								;
 
+						linearray.push([$(document.elementFromPoint(b0_x,b0_y))[0].id, 
+														$(document.elementFromPoint(b1_x,b1_y))[0].id,
+														'line'+linecount, b0_x, b0_y, b1_x, b1_y]);
+
+						linecount++;
+
 					}
-				});
-/////////
+					$(".draggable").draggable(
+	/////////
+					{
+						drag: function(event, ui){
+	// calculate which lines are part of node being dragged
+	// fun for-loop/recursive function to drag all simultaneously with node
+	// need to populate b1 & b2 vars from linearray instead of scraping DOM elements
+	// remove handle-select-on after adding edge 
+
+							//node 1
+							var b0_x = 1
+							var b0_y = 1
+
+							//node 2
+							var b1_x = 1
+							var b1_y = 1
+
+							var hypotenuse = Math.sqrt((b0_x-b1_x)*(b0_x-b1_x) + (b0_y-b1_y)*(b0_y-b1_y));
+							var angle = Math.atan2((b0_y-b1_y), (b0_x-b1_x)) *  (180/Math.PI);
+
+							if(angle >= 90 && angle < 180)  {b0_y = b1_y;}
+							if(angle > 0 && angle < 90)     {b0_x = b1_x;b0_y = b1_y;}
+							if(angle <= 0 && angle > -90)   {b0_x = b1_x;}
+
+							$('#line'+linecount)
+									.queue(function(){$(this).offset({top: b0_y, left: b0_x});	$(this).dequeue();})
+									.queue(function(){$(this).width(hypotenuse);								$(this).dequeue();})
+									.queue(function(){$(this).rotate(angle);										$(this).dequeue();})
+									;
+
+						}
+					});
+	/////////
+				}
 			});
 
 
