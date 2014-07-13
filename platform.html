@@ -14,11 +14,11 @@
 <script src="jQueryRotateCompressed.2.2.js"></script>
 
 <script type="text/javascript">
-
+		var linearray=[];
 	$(document).ready(function(){
 		var row = 15;
 		var col = 15;
-		var linearray=[];
+
 		//build a graphical table    
 		$( "body" ).append( '<table border="1"></table>' );
 		for (var i = 0; i < row; i++) { $( "table").append( '<tr></tr>' ); };
@@ -84,9 +84,11 @@
 					if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
 
 					$('#line'+linecount)
-							.queue(function(){$(this).offset({top: b1_y, left: b1_x});$(this).dequeue();})
-							.queue(function(){$(this).width(hypotenuse);$(this).dequeue();})
-							.queue(function(){$(this).rotate(angle);$(this).dequeue();})
+							.queue(function(){$(this).width(hypotenuse);								$(this).dequeue();})
+							.queue(function(){$(this).rotate(angle);										$(this).dequeue();})
+							.queue(function(){$(this).offset({top: b1_y, left: b1_x});	$(this).dequeue();})
+							// NOTE: we must offset a second time to compensate for the angle rotation
+							.queue(function(){$(this).offset({top: b1_y, left: b1_x});	$(this).dequeue();})
 							;
 
 				}
@@ -96,7 +98,9 @@
 					drag: function(event, ui){
 // calculate which lines are part of node being dragged
 // fun for-loop/recursive function to drag all simultaneously with node
-//remove handle-select-on after adding edge 
+// need to populate b1 & b2 vars from linearray instead of scraping DOM elements
+// remove handle-select-on after adding edge 
+
 						var b1_x = $($('.handle-select-on').parent('.node')[0]).offset().left;
 						var b1_y = $($('.handle-select-on').parent('.node')[0]).offset().top;
 
@@ -110,10 +114,10 @@
 						if(angle > 0 && angle < 90)     {b1_x = b2_x;b1_y = b2_y;}
 						if(angle <= 0 && angle > -90)   {b1_x = b2_x;}
 
-						$("#line"+linecount)
-								.queue(function(){$(this).offset({top: b1_y, left: b1_x});  $(this).dequeue();})
-								.queue(function(){$(this).width(hypotenuse);                $(this).dequeue();})
-								.queue(function(){$(this).rotate(angle);                    $(this).dequeue();})
+						$('#line'+linecount)
+								.queue(function(){$(this).offset({top: b1_y, left: b1_x});	$(this).dequeue();})
+								.queue(function(){$(this).width(hypotenuse);								$(this).dequeue();})
+								.queue(function(){$(this).rotate(angle);										$(this).dequeue();})
 								;
 
 					}
