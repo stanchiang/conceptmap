@@ -1,4 +1,14 @@
 //i want to go from w=>linearray[1][1]
+//perhaps have cache of node edges on client side
+//direction- 1: s->t | 2: s<-t | 3: s<->t | 4: s-t
+/*
+mapping(node to edge join): 
+	maintain 'pool' of existing nodes
+	loop through edges array
+			add endpts as entries to map array indexes with edge index as value. sorta like inverting index and value
+			remove nodes from pool
+	any nodes left are then appended to the end of map as they represent non traversable vertexes in graph
+*/
 data = 
 {
 	"graph":{
@@ -17,10 +27,17 @@ data =
 			 "endpt1":0, "endpt2":1, 
 			 "direction":1, "text":"zzz"
 			},
-			{"id":0, 
+			{"id":1, 
 			 "endpt1":1, "endpt2":2, 
 			 "direction":3, "text":"yyy"
 			}
+		],
+	"map":
+		[
+			{"node":0,'edge':[0]},
+			{"node":1,'edge':[0, 1]},
+			{"node":2,'edge':[1]},
+
 		]
 };
 console.log(data);
